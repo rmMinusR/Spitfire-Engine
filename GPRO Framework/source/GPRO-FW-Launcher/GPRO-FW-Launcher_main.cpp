@@ -8,9 +8,6 @@
 int main()
 {
 	World w;
-
-	w.OnTick();
-
-	w.~World(); //Would be called anyway but I like being verbose
+	
 	return 0;
 }

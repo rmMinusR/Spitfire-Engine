@@ -1,6 +1,6 @@
-#include "Spitfire-Framework/BaseEventListener.h"
-
 #include <sstream>
+
+#include "Spitfire-Framework/BaseEventListener.h"
 
 BaseEventListener::BaseEventListener()
 {
@@ -19,4 +19,24 @@ std::string BaseEventListener::ToString()
 	sout << "}";
 
 	return sout.str();
+}
+
+bool BaseEventListener::OnRecieveEventStart(EventStart& recievedEvent)
+{
+	return false;
+}
+
+bool BaseEventListener::OnRecieveEventTick(EventTick& recievedEvent)
+{
+	return false;
+}
+
+bool BaseEventListener::OnRecieveEventDraw(EventDraw& recievedEvent)
+{
+	return false;
+}
+
+bool BaseEventListener::OnRecieveEventCleanup(EventCleanup& recievedEvent)
+{
+	return false;
 }

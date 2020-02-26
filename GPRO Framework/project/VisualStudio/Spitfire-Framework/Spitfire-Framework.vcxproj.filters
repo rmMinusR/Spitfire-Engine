@@ -13,21 +13,69 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\event">
+      <UniqueIdentifier>{70c36adc-07a1-4148-a3e2-cd95aaf373ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\event">
+      <UniqueIdentifier>{f8dd5759-09cc-4b63-a2a0-3f48e1d52285}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\world">
+      <UniqueIdentifier>{3a59bc12-4e91-4f81-b47e-7181168c7ea8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\world">
+      <UniqueIdentifier>{e4e53a08-c76a-46cc-87e1-9a35209b9d6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Spitfire-Framework\Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\BaseEvent.cpp">
+      <Filter>Source Files\event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\EventTick.cpp">
+      <Filter>Source Files\event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\EventDraw.cpp">
+      <Filter>Source Files\event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\World.cpp">
+      <Filter>Source Files\world</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\source\Spitfire-Framework\BaseEventListener.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\EventStart.cpp">
+      <Filter>Source Files\event</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\EventCleanup.cpp">
+      <Filter>Source Files\event</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\Spitfire-Framework\BaseEventListener.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\Spitfire-Framework\Source.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\BaseEvent.h">
+      <Filter>Header Files\event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\EventTick.h">
+      <Filter>Header Files\event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\EventDraw.h">
+      <Filter>Header Files\event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\BaseEventListener.h">
+      <Filter>Header Files\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\World.h">
+      <Filter>Header Files\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\EventStart.h">
+      <Filter>Header Files\event</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\EventCleanup.h">
+      <Filter>Header Files\event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

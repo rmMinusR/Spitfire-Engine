@@ -19,12 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\BaseEvent.cpp" />
     <ClCompile Include="..\..\..\source\Spitfire-Framework\BaseEventListener.cpp" />
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\EventCleanup.cpp" />
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\EventDraw.cpp" />
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\EventStart.cpp" />
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\EventTick.cpp" />
     <ClCompile Include="..\..\..\source\Spitfire-Framework\Source.cpp" />
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\World.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\BaseEvent.h" />
     <ClInclude Include="..\..\..\include\Spitfire-Framework\BaseEventListener.h" />
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\EventCleanup.h" />
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\EventDraw.h" />
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\EventStart.h" />
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\EventTick.h" />
     <ClInclude Include="..\..\..\include\Spitfire-Framework\Source.h" />
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
