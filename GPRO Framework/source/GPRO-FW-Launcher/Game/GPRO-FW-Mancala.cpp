@@ -77,7 +77,7 @@ extern		gs_mancala_space_state const	gs_mancala_space_invalid = -1;
 
 int launchMancala()
 {
-	gs_mancala game = { 0 };
+	gs_mancala game;// = { 0 };
 
 	gs_mancala_reset(game);
 

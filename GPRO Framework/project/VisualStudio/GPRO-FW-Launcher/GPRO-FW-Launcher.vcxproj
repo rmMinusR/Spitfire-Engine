@@ -19,6 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\source\GPRO-FW-Launcher\Game\GPRO-FW-Battleship.cpp" />
+    <ClCompile Include="..\..\..\source\GPRO-FW-Launcher\Game\GPRO-FW-Checkers.cpp" />
+    <ClCompile Include="..\..\..\source\GPRO-FW-Launcher\Game\GPRO-FW-Mancala.cpp" />
+    <ClCompile Include="..\..\..\source\GPRO-FW-Launcher\Game\GPRO-FW-TicTacToe.cpp" />
     <ClCompile Include="..\..\..\source\GPRO-FW-Launcher\GPRO-FW-Launcher_main.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
