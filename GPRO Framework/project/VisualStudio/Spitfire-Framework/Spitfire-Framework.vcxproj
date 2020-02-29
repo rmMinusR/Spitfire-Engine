@@ -19,11 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\source\Spitfire-Framework\Source.cpp" />
     <ClCompile Include="..\..\..\source\Spitfire-Framework\sfio.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\Spitfire-Framework\Source.h" />
     <ClInclude Include="..\..\..\include\Spitfire-Framework\sfio.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
