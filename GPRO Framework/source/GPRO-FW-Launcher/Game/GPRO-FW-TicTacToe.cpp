@@ -181,12 +181,36 @@ int launchTicTacToe()
 		//End of main game loop
 
 	}
-	//Ebd of program
+	//End of program
 
 	return 0;
 }
 
 void renderarr_cvt(gs_tictactoe game) {
+	StyledTextBlock render(GS_TICTACTOE_BOARD_WIDTH, GS_TICTACTOE_BOARD_HEIGHT);
+
+	for (int x = 0; x < GS_TICTACTOE_BOARD_WIDTH; x++) {
+		for (int y = 0; y < GS_TICTACTOE_BOARD_HEIGHT; y++) {
+			render.setStyledChar(StyledChar(render_chars[game[x][y]], render_styles[game[x][y]]), x, y);
+		}
+	}
+
+	render.renderAt(0, 0);
+}
+
+void renderarr_cvt_v3(gs_tictactoe game) {
+	StyledChar as_renderable[GS_TICTACTOE_BOARD_WIDTH][GS_TICTACTOE_BOARD_HEIGHT];
+
+	for (int x = 0; x < GS_TICTACTOE_BOARD_WIDTH; x++) {
+		for (int y = 0; y < GS_TICTACTOE_BOARD_HEIGHT; y++) {
+			as_renderable[x][y] = StyledChar(render_chars[game[x][y]], render_styles[game[x][y]]);
+		}
+	}
+
+	renderarr_styled(*as_renderable, GS_TICTACTOE_BOARD_WIDTH, GS_TICTACTOE_BOARD_HEIGHT, 0, 0);
+}
+
+void renderarr_cvt_v2(gs_tictactoe game) {
 	char as_renderable[GS_TICTACTOE_BOARD_WIDTH][GS_TICTACTOE_BOARD_HEIGHT];
 	TextStyle styles[GS_TICTACTOE_BOARD_WIDTH][GS_TICTACTOE_BOARD_HEIGHT];
 

@@ -17,7 +17,7 @@ class TextStyle {
 
 public:
 	TextStyle();
-	TextStyle(bool r, bool g, bool b, bool light);
+	TextStyle(const bool& r, const bool& g, const bool& b, const bool& light);
 
 	void setR(const bool& r);
 	void setG(const bool& g);
@@ -34,15 +34,35 @@ public:
 	char character;
 	TextStyle style;
 
+	StyledChar();
+	StyledChar(const char& c);
+	StyledChar(const char& c, const TextStyle& s);
+
 	friend std::ostream& operator<<(std::ostream& out, const StyledChar& c);
 };
 
-//Modified definition of std::string from xstring
-//using StyledString = std::basic_string<StyledChar, std::char_traits<StyledChar>, std::allocator<StyledChar>>;
-
 class StyledString : public std::basic_string<StyledChar, std::char_traits<StyledChar>, std::allocator<StyledChar>> {
 public:
-	void setStyle(int start, int end, TextStyle style);
+	void setStyle(const TextStyle& style, const int& end, const int& start);
 
 	friend std::ostream& operator<<(std::ostream& out, const StyledString& s);
+};
+
+class StyledTextBlock {
+	StyledChar** textBlock;
+	int width, height;
+
+public:
+	StyledTextBlock(const int& w, const int& h);
+	~StyledTextBlock();
+
+	void setStyledChar(const StyledChar& sc, const int& x, const int& y);
+
+	void setStyle(const TextStyle& style, const int& x, const int& y);
+	void setChar (const      char& chars, const int& x, const int& y);
+
+	void fillStyle(const TextStyle& style, const int& x1, const int& y1, const int& x2, const int& y2);
+	void fillChar (const      char& chars, const int& x1, const int& y1, const int& x2, const int& y2);
+
+	void renderAt(const int& x, const int& y);
 };

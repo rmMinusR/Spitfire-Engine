@@ -1,4 +1,5 @@
 #include "Spitfire-Framework/textstyle.h"
+#include "Spitfire-Framework/sfio.h"
 
 #include <Windows.h> //For console text coloration, at the cost of portability
 
@@ -31,7 +32,7 @@ void TextStyle::regenStylecode()
 
 TextStyle::TextStyle() : TextStyle(1, 1, 1, 1) {}
 
-TextStyle::TextStyle(bool r, bool g, bool b, bool light)
+TextStyle::TextStyle(const bool& r, const bool& g, const bool& b, const bool& light)
 {
 	this->r = r;
 	this->g = g;
@@ -70,6 +71,24 @@ std::ostream& operator<<(std::ostream& out, const StyledChar& c)
 	return out;
 }
 
+StyledChar::StyledChar()
+{
+	character = '\0';
+	style = TextStyle();
+}
+
+StyledChar::StyledChar(const char& c)
+{
+	character = c;
+	style = TextStyle();
+}
+
+StyledChar::StyledChar(const char& c, const TextStyle& s)
+{
+	character = c;
+	style = s;
+}
+
 #pragma endregion
 
 #pragma region StyledString
@@ -82,7 +101,7 @@ std::ostream& operator<<(std::ostream& out, const StyledString& s)
 	return out;
 }
 
-void StyledString::setStyle(int start, int end, TextStyle style)
+void StyledString::setStyle(const TextStyle& style, const int& end = INT_MAX, const int& start = 0)
 {
 	for (int i = max(0, start); i < min(end, length()); i++) {
 		at(i).style = style;
@@ -91,3 +110,65 @@ void StyledString::setStyle(int start, int end, TextStyle style)
 
 #pragma endregion
 
+#pragma region StyledTextBlock
+
+StyledTextBlock::StyledTextBlock(const int& w, const int& h) {
+	width = w;
+	height = h;
+
+	textBlock = new StyledChar * [w];
+	for (int i = 0; i < w; i++) {
+		textBlock[i] = new StyledChar[h];
+		for (int j = 0; j < h; j++) textBlock[i][j] = StyledChar();
+	}
+}
+
+StyledTextBlock::~StyledTextBlock() {
+	for (int i = 0; i < width; i++) delete[] textBlock[i];
+	delete[] textBlock;
+}
+
+void StyledTextBlock::setStyledChar(const StyledChar& sc, const int& x, const int& y)
+{
+	textBlock[x][y] = sc;
+}
+
+void StyledTextBlock::setStyle(const TextStyle& style, const int& x, const int& y)
+{
+	textBlock[x][y].style = style;
+}
+
+void StyledTextBlock::setChar(const char& chars, const int& x, const int& y)
+{
+	textBlock[x][y].character = chars;
+}
+
+void StyledTextBlock::fillStyle(const TextStyle& style, const int& x1, const int& y1, const int& x2, const int& y2)
+{
+	for (int ix = x1; ix <= x2; ix++) {
+		for (int iy = y1; iy <= y2; iy++) {
+			setStyle(style, ix, iy);
+		}
+	}
+}
+
+void StyledTextBlock::fillChar(const char& chars, const int& x1, const int& y1, const int& x2, const int& y2)
+{
+	for (int ix = x1; ix <= x2; ix++) {
+		for (int iy = y1; iy <= y2; iy++) {
+			setChar(chars, ix, iy);
+		}
+	}
+}
+
+void StyledTextBlock::renderAt(const int& x, const int& y)
+{
+	for (int ix = 0; ix < width; ix++) {
+		for (int iy = 0; iy < height; iy++) {
+			csetcurpos(x + ix, y + iy);
+			std::cout << textBlock[ix][iy];
+		}
+	}
+}
+
+#pragma endregion

@@ -104,6 +104,25 @@ void renderarr_styled(char* arr, TextStyle* styles, const int& width, const int&
 	csetcolc(1, 1, 1, 1);
 }
 
+void renderarr_styled(StyledChar* arr, const int& width, const int& height, const int& off_x, const int& off_y)
+{
+	const int border = 3;
+	for (int x = 0; x < width; x++) {
+		for (int y = 0; y < height; y++) {
+			int cell_x = border + x * (1 + border * 2);
+			int cell_y = border + y * (1 + border * 2);
+
+			csetcurpos(cell_x + off_x, cell_y + off_y);
+			std::cout << *(arr + x + height * y);
+
+			for (int i = 1; i <= border; i++) cdrawbox(cell_x - i + off_x, cell_y - i + off_y, cell_x + i + off_x, cell_y + i + off_y);
+		}
+	}
+
+	csetcurpos(off_x, width * (1 + border * 2) + off_y);
+	csetcolc(1, 1, 1, 1);
+}
+
 void cclear()
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
