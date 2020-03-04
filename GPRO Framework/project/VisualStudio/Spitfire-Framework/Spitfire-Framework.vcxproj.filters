@@ -18,9 +18,15 @@
     <ClCompile Include="..\..\..\source\Spitfire-Framework\sfio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\Spitfire-Framework\textstyle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\Spitfire-Framework\sfio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\Spitfire-Framework\textstyle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

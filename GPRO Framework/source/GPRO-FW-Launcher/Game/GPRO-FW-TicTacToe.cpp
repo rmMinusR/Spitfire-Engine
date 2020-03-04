@@ -1,4 +1,5 @@
 #include "Spitfire-Framework/sfio.h"
+#include "Spitfire-Framework/textstyle.h"
 
 //-----------------------------------------------------------------------------
 // DECLARATIONS
@@ -59,7 +60,7 @@ inline gs_tictactoe_index gs_tictactoe_reset(gs_tictactoe game)
 // DEFINITIONS
 
 char render_chars[3];
-unsigned char render_styles[3];
+TextStyle render_styles[3];
 
 void renderarr_cvt(gs_tictactoe game); //Conversion function from gs_tictactoe[][] to renderarr-formatted
 int launchTicTacToe()
@@ -68,26 +69,29 @@ int launchTicTacToe()
 	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_o   ] = 'O';
 	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_x   ] = 'X';
 
-	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_open] = ascol(0, 0, 0, 1);
-	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_o   ] = ascol(1, 0, 0, 1);
-	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_x   ] = ascol(0, 0, 1, 1);
+	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_open] = TextStyle(0, 0, 0, 1);
+	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_o   ] = TextStyle(1, 0, 0, 1);
+	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_x   ] = TextStyle(0, 0, 1, 1);
 
 	gs_tictactoe game;
 
-	{ //Main game loop
+	bool doExitGame = false;
+	while (!doExitGame) {
+		
+		//Initialize game
 		gs_tictactoe_reset(game);
 		gs_tictactoe_space_state whoseTurn = gs_tictactoe_space_o;
+		
+		//Main game loop
 		while (true) {
-			whoseTurn = (whoseTurn==gs_tictactoe_space_o) ? gs_tictactoe_space_x : gs_tictactoe_space_o;
+			//Render the game board
+			cclear();
 			renderarr_cvt(game);
 
-			csetcolb(render_styles[whoseTurn]);
-			if (whoseTurn == gs_tictactoe_space_x) {
-				std::cout << "Player X's turn" << std::endl;
-			}
-			else {
-				std::cout << "Player O's turn" << std::endl;
-			}
+			//Swap whose turn it is, and display it
+			whoseTurn = (whoseTurn == gs_tictactoe_space_o) ? gs_tictactoe_space_x : gs_tictactoe_space_o;
+			
+			std::cout << "Player " << render_chars[whoseTurn] << "'s turn" << std::endl;
 
 			//Try to move
 			bool failedmove = true;
@@ -113,15 +117,78 @@ int launchTicTacToe()
 				}
 				std::cout << std::endl;
 			}
+
+			//Do win/lose logic
+			{
+				gs_tictactoe_space_state whoWon = gs_tictactoe_space_state::gs_tictactoe_space_open;
+				
+				//Check for horizontal win
+				if(whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open)
+				for (int y = 0; y < GS_TICTACTOE_BOARD_HEIGHT; y++) {
+					bool _won = true;
+					for (int x = 1; x < GS_TICTACTOE_BOARD_WIDTH; x++) {
+						_won = _won && (game[x][y] == game[0][y]);
+					}
+					if (_won) whoWon = game[0][y];
+				}
+
+				//Check for vertical win
+				if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open)
+				for (int x = 0; x < GS_TICTACTOE_BOARD_HEIGHT; x++) {
+					bool _won = true;
+					for (int y = 1; y < GS_TICTACTOE_BOARD_WIDTH; y++) {
+						_won = _won && (game[x][y] == game[y][0]);
+					}
+					if (_won) whoWon = game[x][0];
+				}
+
+				//Check for win along diagonals
+				if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open) {
+					bool _won = true;
+					for (int i = 1; i < GS_TICTACTOE_BOARD_HEIGHT && i < GS_TICTACTOE_BOARD_WIDTH; i++) {
+						_won = _won && (game[i][i] == game[0][0]);
+					}
+					if (_won) whoWon = game[0][0];
+				}
+
+				if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open) {
+					bool _won = true;
+					for (int i = 1; i < GS_TICTACTOE_BOARD_HEIGHT && i < GS_TICTACTOE_BOARD_WIDTH; i++) {
+						_won = _won && (game[GS_TICTACTOE_BOARD_WIDTH - 1 - i][i] == game[GS_TICTACTOE_BOARD_WIDTH - 1][0]);
+					}
+					if (_won) whoWon = game[0][GS_TICTACTOE_BOARD_WIDTH - 1];
+				}
+
+				//Check for tie
+				if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open) {
+					bool _tied = true;
+					for (int x = 0; x < GS_TICTACTOE_BOARD_HEIGHT; x++) {
+						for (int y = 1; y < GS_TICTACTOE_BOARD_WIDTH; y++) {
+							_tied = _tied && (game[x][y] != gs_tictactoe_space_state::gs_tictactoe_space_open);
+						}
+					}
+					if (_tied) whoWon = gs_tictactoe_space_state::gs_tictactoe_space_invalid;
+					std::cout << "Tied? " << _tied << std::endl;
+				}
+
+				std::cout << "Winner: " << render_chars[whoWon] << std::endl;
+
+				if (whoWon != gs_tictactoe_space_state::gs_tictactoe_space_open) gs_tictactoe_reset(game);
+			}
+			//End of win/lose logic
+
 		}
+		//End of main game loop
+
 	}
+	//Ebd of program
 
 	return 0;
 }
 
 void renderarr_cvt(gs_tictactoe game) {
 	char as_renderable[GS_TICTACTOE_BOARD_WIDTH][GS_TICTACTOE_BOARD_HEIGHT];
-	unsigned char styles[GS_TICTACTOE_BOARD_WIDTH][GS_TICTACTOE_BOARD_HEIGHT];
+	TextStyle styles[GS_TICTACTOE_BOARD_WIDTH][GS_TICTACTOE_BOARD_HEIGHT];
 
 	for (int x = 0; x < GS_TICTACTOE_BOARD_WIDTH; x++) {
 		for (int y = 0; y < GS_TICTACTOE_BOARD_HEIGHT; y++) {
@@ -129,7 +196,7 @@ void renderarr_cvt(gs_tictactoe game) {
 			styles[x][y] = render_styles[game[x][y]];
 		}
 	}
-	
+
 	renderarr_styled(*as_renderable, *styles, GS_TICTACTOE_BOARD_WIDTH, GS_TICTACTOE_BOARD_HEIGHT, 0, 0);
 	//renderarr(*as_renderable, GS_TICTACTOE_BOARD_WIDTH, GS_TICTACTOE_BOARD_HEIGHT, 10, 10);
 }

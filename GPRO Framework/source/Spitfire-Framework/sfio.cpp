@@ -1,27 +1,11 @@
 #include "Spitfire-Framework/sfio.h"
 
-#include <Windows.h> //For console text coloration, at the cost of portability
+#include <Windows.h> //For console manipulation, at the cost of portability
 #include <conio.h>
 #include <string>
 
 char cquerych() {
 	return _getch();
-}
-
-unsigned char ascol(bool r, bool g, bool b, bool light) {
-	return 	r*0b0100 + 
-			g*0b0010 +
-			b*0b0001 +
-		light*0b1000;
-}
-
-void csetcolb(unsigned char col) {
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, col);
-}
-
-void csetcolc(bool r, bool g, bool b, bool light) {
-	csetcolb( ascol(r, g, b, light) );
 }
 
 void csetcurpos(unsigned int x, unsigned int y) {
@@ -98,4 +82,40 @@ void renderarr_styled(char* arr, unsigned char* styles, const int& width, const 
 
 	csetcurpos(off_x, width * (1 + border * 2) + off_y);
 	csetcolc(1, 1, 1, 1);
+}
+
+void renderarr_styled(char* arr, TextStyle* styles, const int& width, const int& height, const int& off_x, const int& off_y)
+{
+	const int border = 3;
+	for (int x = 0; x < width; x++) {
+		for (int y = 0; y < height; y++) {
+			int cell_x = border + x * (1 + border * 2);
+			int cell_y = border + y * (1 + border * 2);
+
+			csetcurpos(cell_x + off_x, cell_y + off_y);
+			(styles + x + height * y)->applyStyle();
+			std::cout << *(arr + x + height * y);
+
+			for (int i = 1; i <= border; i++) cdrawbox(cell_x - i + off_x, cell_y - i + off_y, cell_x + i + off_x, cell_y + i + off_y);
+		}
+	}
+
+	csetcurpos(off_x, width * (1 + border * 2) + off_y);
+	csetcolc(1, 1, 1, 1);
+}
+
+void cclear()
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	DWORD cwritten;
+	DWORD csize;
+	CONSOLE_SCREEN_BUFFER_INFO cinfo;
+	COORD ccoords = { 0, 0 };
+
+	GetConsoleScreenBufferInfo(hConsole, &cinfo) &&
+	(csize = cinfo.dwSize.X * cinfo.dwSize.Y) &&
+	FillConsoleOutputCharacter(hConsole, (TCHAR)' ', csize, ccoords, &cwritten) &&
+	GetConsoleScreenBufferInfo(hConsole, &cinfo) &&
+	FillConsoleOutputAttribute(hConsole, cinfo.wAttributes, csize, ccoords, &cwritten) &&
+	SetConsoleCursorPosition(hConsole, { 0,0 });
 }
