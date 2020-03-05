@@ -23,7 +23,7 @@ public:
 	void setG(const bool& g);
 	void setB(const bool& b);
 	void setLight(const bool& light);
-
+	
 	void applyStyle() const;
 
 	friend std::ostream& operator<<(std::ostream& out, const TextStyle& style);
@@ -50,19 +50,22 @@ public:
 
 class StyledTextBlock {
 	StyledChar** textBlock;
-	int width, height;
 
 public:
+	int width, height;
+	
 	StyledTextBlock(const int& w, const int& h);
 	~StyledTextBlock();
 
-	void setStyledChar(const StyledChar& sc, const int& x, const int& y);
+	void setStyledChar(const StyledChar& sc,    const int& x, const int& y);
+	void setStyle     (const  TextStyle& style, const int& x, const int& y);
+	void setChar      (const       char& chars, const int& x, const int& y);
 
-	void setStyle(const TextStyle& style, const int& x, const int& y);
-	void setChar (const      char& chars, const int& x, const int& y);
-
-	void fillStyle(const TextStyle& style, const int& x1, const int& y1, const int& x2, const int& y2);
-	void fillChar (const      char& chars, const int& x1, const int& y1, const int& x2, const int& y2);
+	void fillStyledChar(const StyledChar& styledChar, const int& x1, const int& y1, const int& x2, const int& y2);
+	void fillStyle     (const  TextStyle& style,      const int& x1, const int& y1, const int& x2, const int& y2);
+	void fillChar      (const       char& chars,      const int& x1, const int& y1, const int& x2, const int& y2);
+	
+	void drawBox(const TextStyle& style, int x1, int y1, int x2, int y2);
 
 	void renderAt(const int& x, const int& y);
 };

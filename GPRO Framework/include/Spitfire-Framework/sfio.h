@@ -8,10 +8,10 @@
 char cquerych();
 
 void csetcurpos(unsigned int x, unsigned int y);
+int cgetw();
+int cgeth();
 
-void renderarr       (char* arr,                        const int& width, const int& height, const int& off_x = 0, const int& off_y = 0);
-void renderarr_styled(char* arr, unsigned char* styles, const int& width, const int& height, const int& off_x = 0, const int& off_y = 0);
-void renderarr_styled(char* arr,     TextStyle* styles, const int& width, const int& height, const int& off_x = 0, const int& off_y = 0);
-void renderarr_styled(StyledChar* arr,                  const int& width, const int& height, const int& off_x = 0, const int& off_y = 0);
+void cfill(char c, int x1, int y1, int x2, int y2);
+void cdrawbox(int x1, int y1, int x2, int y2);
 
 void cclear();

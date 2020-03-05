@@ -61,6 +61,7 @@ inline gs_tictactoe_index gs_tictactoe_reset(gs_tictactoe game)
 
 char render_chars[3];
 TextStyle render_styles[3];
+StyledChar render_sc[3];
 
 void renderarr_cvt(gs_tictactoe game); //Conversion function from gs_tictactoe[][] to renderarr-formatted
 int launchTicTacToe()
@@ -68,10 +69,14 @@ int launchTicTacToe()
 	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_open] = '.';
 	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_o   ] = 'O';
 	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_x   ] = 'X';
-
+	
 	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_open] = TextStyle(0, 0, 0, 1);
 	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_o   ] = TextStyle(1, 0, 0, 1);
 	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_x   ] = TextStyle(0, 0, 1, 1);
+
+	render_sc[gs_tictactoe_space_state::gs_tictactoe_space_open] = StyledChar(render_chars[gs_tictactoe_space_state::gs_tictactoe_space_open], render_styles[gs_tictactoe_space_state::gs_tictactoe_space_open]);
+	render_sc[gs_tictactoe_space_state::gs_tictactoe_space_o   ] = StyledChar(render_chars[gs_tictactoe_space_state::gs_tictactoe_space_o   ], render_styles[gs_tictactoe_space_state::gs_tictactoe_space_o   ]);
+	render_sc[gs_tictactoe_space_state::gs_tictactoe_space_x   ] = StyledChar(render_chars[gs_tictactoe_space_state::gs_tictactoe_space_x   ], render_styles[gs_tictactoe_space_state::gs_tictactoe_space_x   ]);
 
 	gs_tictactoe game;
 
@@ -174,57 +179,34 @@ int launchTicTacToe()
 				std::cout << "Winner: " << render_chars[whoWon] << std::endl;
 
 				if (whoWon != gs_tictactoe_space_state::gs_tictactoe_space_open) gs_tictactoe_reset(game);
-			}
-			//End of win/lose logic
 
-		}
-		//End of main game loop
+			} //End of win/lose logic
 
-	}
-	//End of program
+		} //End of main game loop
+		
+	} //End of program
+	
 
 	return 0;
 }
 
 void renderarr_cvt(gs_tictactoe game) {
-	StyledTextBlock render(GS_TICTACTOE_BOARD_WIDTH, GS_TICTACTOE_BOARD_HEIGHT);
+	const int border = 3;
 
+	StyledTextBlock canvas(GS_TICTACTOE_BOARD_WIDTH * (1 + border * 2), GS_TICTACTOE_BOARD_HEIGHT * (1 + border * 2));
+	
 	for (int x = 0; x < GS_TICTACTOE_BOARD_WIDTH; x++) {
 		for (int y = 0; y < GS_TICTACTOE_BOARD_HEIGHT; y++) {
-			render.setStyledChar(StyledChar(render_chars[game[x][y]], render_styles[game[x][y]]), x, y);
+			int cell_x = border + x * (1 + border * 2);
+			int cell_y = border + y * (1 + border * 2);
+			
+			canvas.setStyledChar(render_sc[game[x][y]], cell_x, cell_y);
+			
+			for (int i = 1; i <= border; i++) canvas.drawBox(render_styles[game[x][y]], cell_x - i, cell_y - i, cell_x + i, cell_y + i);
 		}
 	}
 
-	render.renderAt(0, 0);
+	canvas.renderAt(0, 0);
 }
-
-void renderarr_cvt_v3(gs_tictactoe game) {
-	StyledChar as_renderable[GS_TICTACTOE_BOARD_WIDTH][GS_TICTACTOE_BOARD_HEIGHT];
-
-	for (int x = 0; x < GS_TICTACTOE_BOARD_WIDTH; x++) {
-		for (int y = 0; y < GS_TICTACTOE_BOARD_HEIGHT; y++) {
-			as_renderable[x][y] = StyledChar(render_chars[game[x][y]], render_styles[game[x][y]]);
-		}
-	}
-
-	renderarr_styled(*as_renderable, GS_TICTACTOE_BOARD_WIDTH, GS_TICTACTOE_BOARD_HEIGHT, 0, 0);
-}
-
-void renderarr_cvt_v2(gs_tictactoe game) {
-	char as_renderable[GS_TICTACTOE_BOARD_WIDTH][GS_TICTACTOE_BOARD_HEIGHT];
-	TextStyle styles[GS_TICTACTOE_BOARD_WIDTH][GS_TICTACTOE_BOARD_HEIGHT];
-
-	for (int x = 0; x < GS_TICTACTOE_BOARD_WIDTH; x++) {
-		for (int y = 0; y < GS_TICTACTOE_BOARD_HEIGHT; y++) {
-			as_renderable[x][y] = render_chars[ game[x][y] ];
-			styles[x][y] = render_styles[game[x][y]];
-		}
-	}
-
-	renderarr_styled(*as_renderable, *styles, GS_TICTACTOE_BOARD_WIDTH, GS_TICTACTOE_BOARD_HEIGHT, 0, 0);
-	//renderarr(*as_renderable, GS_TICTACTOE_BOARD_WIDTH, GS_TICTACTOE_BOARD_HEIGHT, 10, 10);
-}
-
-
 
 //-----------------------------------------------------------------------------

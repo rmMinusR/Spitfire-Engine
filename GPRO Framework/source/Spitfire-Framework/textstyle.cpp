@@ -130,17 +130,39 @@ StyledTextBlock::~StyledTextBlock() {
 
 void StyledTextBlock::setStyledChar(const StyledChar& sc, const int& x, const int& y)
 {
-	textBlock[x][y] = sc;
+	if (x >= width || y >= height || x < 0 || y < 0) {
+		return;
+	}
+
+	setStyle(sc.style, x, y);
+	setChar(sc.character, x, y);
 }
 
 void StyledTextBlock::setStyle(const TextStyle& style, const int& x, const int& y)
 {
+	if (x >= width || y >= height || x < 0 || y < 0) {
+		return;
+	}
+
 	textBlock[x][y].style = style;
 }
 
 void StyledTextBlock::setChar(const char& chars, const int& x, const int& y)
 {
+	if (x >= width || y >= height || x < 0 || y < 0) {
+		return;
+	}
+
 	textBlock[x][y].character = chars;
+}
+
+void StyledTextBlock::fillStyledChar(const StyledChar &sc, const int& x1, const int& y1, const int& x2, const int& y2)
+{
+	for (int ix = x1; ix <= x2; ix++) {
+		for (int iy = y1; iy <= y2; iy++) {
+			setStyledChar(sc, ix, iy);
+		}
+	}
 }
 
 void StyledTextBlock::fillStyle(const TextStyle& style, const int& x1, const int& y1, const int& x2, const int& y2)
@@ -159,6 +181,29 @@ void StyledTextBlock::fillChar(const char& chars, const int& x1, const int& y1, 
 			setChar(chars, ix, iy);
 		}
 	}
+}
+
+const char border_n = 196;
+const char border_w = 179;
+const char border_s = 196;
+const char border_e = 179;
+
+const char border_nw = 218;
+const char border_sw = 192;
+const char border_se = 217;
+const char border_ne = 191;
+
+void StyledTextBlock::drawBox(const TextStyle& style, int x1, int y1, int x2, int y2)
+{
+	setStyledChar(StyledChar(border_nw, style), x1, y1);
+	setStyledChar(StyledChar(border_sw, style), x1, y2);
+	setStyledChar(StyledChar(border_se, style), x2, y2);
+	setStyledChar(StyledChar(border_ne, style), x2, y1);
+
+	fillStyledChar(StyledChar(border_s, style), x1 + 1, y2,     x2 - 1, y2    );
+	fillStyledChar(StyledChar(border_n, style), x1 + 1, y1,     x2 - 1, y1    );
+	fillStyledChar(StyledChar(border_w, style), x1,     y1 + 1, x1,     y2 - 1);
+	fillStyledChar(StyledChar(border_e, style), x2,     y1 + 1, x2,     y2 - 1);
 }
 
 void StyledTextBlock::renderAt(const int& x, const int& y)
