@@ -208,10 +208,10 @@ void StyledTextBlock::drawBox(const TextStyle& style, int x1, int y1, int x2, in
 
 void StyledTextBlock::renderAt(const int& x, const int& y)
 {
-	for (int ix = 0; ix < width; ix++) {
-		for (int iy = 0; iy < height; iy++) {
-			csetcurpos(x + ix, y + iy);
-			std::cout << textBlock[ix][iy];
+	for (int iy = 0; iy < height; iy++) {
+		csetcurpos(x, y + iy);
+		for (int ix = 0; ix < width; ix++) {
+			if (textBlock[ix][iy].character > 32 || textBlock[ix][iy].character < 0) std::cout << textBlock[ix][iy];
 		}
 	}
 }

@@ -1,5 +1,11 @@
 #include "Spitfire-Framework/sfio.h"
 #include "Spitfire-Framework/textstyle.h"
+#include <time.h>
+
+// MACROS
+
+#define max(a, b) ( ( (a) > (b) )?(a):(b) )
+#define min(a, b) ( ( (a) < (b) )?(a):(b) )
 
 //-----------------------------------------------------------------------------
 // DECLARATIONS
@@ -63,7 +69,7 @@ char render_chars[3];
 TextStyle render_styles[3];
 StyledChar render_sc[3];
 
-void renderarr_cvt(gs_tictactoe game); //Conversion function from gs_tictactoe[][] to renderarr-formatted
+void render(gs_tictactoe game, const int& highlightedX = -1, const int& highlightedY = -1); //Conversion function from gs_tictactoe[][] to renderarr-formatted
 int launchTicTacToe()
 {
 	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_open] = '.';
@@ -86,42 +92,73 @@ int launchTicTacToe()
 		//Initialize game
 		gs_tictactoe_reset(game);
 		gs_tictactoe_space_state whoseTurn = gs_tictactoe_space_o;
-		
+
+		//Previous Console Width/Height
+		int pcw = 0;
+		int pch = 0;
+
+		csetcurvis(false);
+
 		//Main game loop
 		while (true) {
-			//Render the game board
-			cclear();
-			renderarr_cvt(game);
+			//Input logic + rendering
+			int selX = GS_TICTACTOE_BOARD_WIDTH / 2, selY = GS_TICTACTOE_BOARD_HEIGHT / 2;
+			bool hasMoved = false;
+			while (!hasMoved) {
 
-			//Swap whose turn it is, and display it
-			whoseTurn = (whoseTurn == gs_tictactoe_space_o) ? gs_tictactoe_space_x : gs_tictactoe_space_o;
-			
-			std::cout << "Player " << render_chars[whoseTurn] << "'s turn" << std::endl;
+				char input = cquerycht(50);
 
-			//Try to move
-			bool failedmove = true;
-			while (failedmove) {
-				csetcolc(1, 1, 1, 1);
-				std::cout << "Move in position (ex. C3): ";
+				if (input == -32) { //Charcode preceeding arrow keys
 
-				char x = 0;
-				while (!('a' <= x && x <= 'c')) x = tolower(cquerych());
-				std::cout << x;
+					char c = cquerycht(5);
+					/**/ if (c == 72) { // UP
+						selY = max(selY - 1, 0);
+					}
+					else if (c == 75) { // LEFT
+						selX = max(selX - 1, 0);
+					}
+					else if (c == 80) { // DOWN
+						selY = min(selY + 1, GS_TICTACTOE_BOARD_HEIGHT - 1);
+					}
+					else if (c == 77) { // RIGHT
+						selX = min(selX + 1, GS_TICTACTOE_BOARD_WIDTH - 1);
+					}
 
-				char y = 0;
-				while (!('1' <= y && y <= '3')) y = cquerych();
-				std::cout << y;
+				}
+				else { // Non-arrow key input
 
-				if (gs_tictactoe_getSpaceState(game, x - 'a', y - '1') == gs_tictactoe_space_state::gs_tictactoe_space_open) {
-					gs_tictactoe_setSpaceState(game, whoseTurn, x - 'a', y - '1');
-					failedmove = false;
+					if (input == ' ' || input == '\n') {
+
+						if (gs_tictactoe_getSpaceState(game, selX, selY) == gs_tictactoe_space_state::gs_tictactoe_space_open) {
+							gs_tictactoe_setSpaceState(game, whoseTurn, selX, selY);
+							hasMoved = true;
+						}
+
+					}
+
+				}
+
+				//If the window's size has changed, clear the buffer
+				if (pcw != cgetw() || pch != cgeth()) {
+					pcw = cgetw();
+					pch = cgeth();
+
+					cclear();
+				}
+
+				//Render the game board, flashing the selected cell
+				if (clock() % 500 < 250) {
+					render(game, selX, selY);
 				}
 				else {
-					failedmove = true;
-					std::cout << std::endl << "Space already occupied!";
+					render(game);
 				}
-				std::cout << std::endl;
 			}
+
+			//Display whose turn it is, and swap it
+			std::cout << render_styles[whoseTurn] << "Player " << render_chars[whoseTurn] << "'s turn" << std::endl;
+
+			whoseTurn = (whoseTurn == gs_tictactoe_space_o) ? gs_tictactoe_space_x : gs_tictactoe_space_o;
 
 			//Do win/lose logic
 			{
@@ -176,9 +213,13 @@ int launchTicTacToe()
 					std::cout << "Tied? " << _tied << std::endl;
 				}
 
-				std::cout << "Winner: " << render_chars[whoWon] << std::endl;
+				if (whoWon != gs_tictactoe_space_state::gs_tictactoe_space_open) {
+					std::cout << render_styles[whoWon] << "Winner: " << render_chars[whoWon] << std::endl;
+					cquerych();
 
-				if (whoWon != gs_tictactoe_space_state::gs_tictactoe_space_open) gs_tictactoe_reset(game);
+					gs_tictactoe_reset(game);
+					cclear();
+				}
 
 			} //End of win/lose logic
 
@@ -190,8 +231,8 @@ int launchTicTacToe()
 	return 0;
 }
 
-void renderarr_cvt(gs_tictactoe game) {
-	const int border = 3;
+void render(gs_tictactoe game, const int& highlightedX, const int& highlightedY) {
+	const int border = 1;
 
 	StyledTextBlock canvas(GS_TICTACTOE_BOARD_WIDTH * (1 + border * 2), GS_TICTACTOE_BOARD_HEIGHT * (1 + border * 2));
 	
@@ -203,10 +244,17 @@ void renderarr_cvt(gs_tictactoe game) {
 			canvas.setStyledChar(render_sc[game[x][y]], cell_x, cell_y);
 			
 			for (int i = 1; i <= border; i++) canvas.drawBox(render_styles[game[x][y]], cell_x - i, cell_y - i, cell_x + i, cell_y + i);
+
+			if (x == highlightedX && y == highlightedY) {
+				canvas.fillStyle(TextStyle(1, 1, 0, 1), cell_x - border, cell_y - border, cell_x + border, cell_y + border);
+			}
 		}
 	}
 
-	canvas.renderAt(0, 0);
+	canvas.renderAt(cgetw()/2 - canvas.width/2, cgeth()/2 - canvas.height/2);
+
+	csetcolc(1, 1, 1, 1);
+	csetcurpos(0, 0);
 }
 
 //-----------------------------------------------------------------------------

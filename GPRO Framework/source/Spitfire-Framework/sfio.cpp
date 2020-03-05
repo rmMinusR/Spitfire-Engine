@@ -3,9 +3,24 @@
 #include <Windows.h> //For console manipulation, at the cost of portability
 #include <conio.h>
 #include <string>
+#include <ctime> //For cquerych with timeout
 
 char cquerych() {
 	return _getch();
+}
+
+char cquerycht(float timeout) {
+	char c = '\0';
+	bool didRecieveInput = false;
+
+	clock_t start = clock();
+	while (!(didRecieveInput = _kbhit()) && (clock() <= start + timeout)) {
+		Sleep(50);
+	}
+
+	if (didRecieveInput) c = _getch();
+
+	return c;
 }
 
 void csetcurpos(unsigned int x, unsigned int y) {
@@ -20,14 +35,22 @@ int cgetw()
 {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-	return csbi.dwSize.X;
+	return csbi.srWindow.Right - csbi.srWindow.Left;
 }
 
 int cgeth()
 {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-	return csbi.dwSize.Y;
+	return csbi.srWindow.Bottom - csbi.srWindow.Top;
+}
+
+void csetcurvis(bool visiblity)
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO cursorInfo;
+	cursorInfo.bVisible = visiblity;
+	SetConsoleCursorInfo(hConsole, &cursorInfo);
 }
 
 void cfill(char c, int x1, int y1, int x2, int y2) {

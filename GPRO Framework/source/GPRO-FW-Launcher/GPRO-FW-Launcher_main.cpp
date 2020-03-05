@@ -2,6 +2,7 @@
 //
 
 #include "Game/GPRO-FW-TicTacToe.h"
+#include "Spitfire-Framework/sfio.h"
 
 int main()
 {
