@@ -208,7 +208,7 @@ int launchTicTacToe()
 				if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open) {
 					bool _tied = true;
 					for (int x = 0; x < GS_TICTACTOE_BOARD_HEIGHT; x++) {
-						for (int y = 1; y < GS_TICTACTOE_BOARD_WIDTH; y++) {
+						for (int y = 0; y < GS_TICTACTOE_BOARD_WIDTH; y++) {
 							_tied = _tied && (game[x][y] != gs_tictactoe_space_state::gs_tictactoe_space_open);
 						}
 					}
@@ -217,15 +217,16 @@ int launchTicTacToe()
 				
 				//If game is over, show it
 				if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_invalid) {
-					showDialog("Tied!", cgetw() / 2, cgeth() / 2);
+					showDialog("The game has reached a tie!", cgetw() / 2, cgeth() / 2);
 					cquerych();
 
 					gs_tictactoe_reset(game);
 					cclear();
 				}
 				else if (whoWon != gs_tictactoe_space_state::gs_tictactoe_space_open) {
-					std::string winstr = "Winner: ";
+					std::string winstr = "Player ";
 					winstr += render_chars[whoWon];
+					winstr += " has won the game!";
 					showDialog(winstr, cgetw() / 2, cgeth() / 2);
 					cquerych();
 
@@ -244,7 +245,7 @@ int launchTicTacToe()
 }
 
 void render(gs_tictactoe game, const int& highlightedX, const int& highlightedY) {
-	const int border = 2;
+	const int border = 3;
 
 	StyledTextBlock gameCanvas(GS_TICTACTOE_BOARD_WIDTH * (1 + border * 2), GS_TICTACTOE_BOARD_HEIGHT * (1 + border * 2));
 	
@@ -255,7 +256,8 @@ void render(gs_tictactoe game, const int& highlightedX, const int& highlightedY)
 			
 			gameCanvas.setStyledChar(render_sc[game[x][y]], cell_x, cell_y);
 			
-			for (int i = 1; i <= border; i++) gameCanvas.drawBox(render_styles[game[x][y]], cell_x - i, cell_y - i, cell_x + i, cell_y + i);
+			int i = border;
+			if(border > 0) gameCanvas.drawBox(render_styles[game[x][y]], cell_x - i, cell_y - i, cell_x + i, cell_y + i);
 
 			if (x == highlightedX && y == highlightedY) {
 				gameCanvas.fillStyle(TextStyle(1, 1, 0, 1), cell_x - border, cell_y - border, cell_x + border, cell_y + border);
