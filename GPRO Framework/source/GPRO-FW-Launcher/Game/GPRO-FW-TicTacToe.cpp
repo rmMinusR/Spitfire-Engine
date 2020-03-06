@@ -70,6 +70,7 @@ TextStyle render_styles[3];
 StyledChar render_sc[3];
 
 void render(gs_tictactoe game, const int& highlightedX = -1, const int& highlightedY = -1); //Conversion function from gs_tictactoe[][] to renderarr-formatted
+void showDialog(std::string str, int x, int y);
 int launchTicTacToe()
 {
 	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_open] = '.';
@@ -101,6 +102,9 @@ int launchTicTacToe()
 
 		//Main game loop
 		while (true) {
+			//Display whose turn it is
+			std::cout << render_styles[whoseTurn] << "Player " << render_chars[whoseTurn] << "'s turn" << std::endl;
+
 			//Input logic + rendering
 			int selX = GS_TICTACTOE_BOARD_WIDTH / 2, selY = GS_TICTACTOE_BOARD_HEIGHT / 2;
 			bool hasMoved = false;
@@ -155,9 +159,7 @@ int launchTicTacToe()
 				}
 			}
 
-			//Display whose turn it is, and swap it
-			std::cout << render_styles[whoseTurn] << "Player " << render_chars[whoseTurn] << "'s turn" << std::endl;
-
+			//Swap whose turn it is
 			whoseTurn = (whoseTurn == gs_tictactoe_space_o) ? gs_tictactoe_space_x : gs_tictactoe_space_o;
 
 			//Do win/lose logic
@@ -165,23 +167,21 @@ int launchTicTacToe()
 				gs_tictactoe_space_state whoWon = gs_tictactoe_space_state::gs_tictactoe_space_open;
 				
 				//Check for horizontal win
-				if(whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open)
 				for (int y = 0; y < GS_TICTACTOE_BOARD_HEIGHT; y++) {
-					bool _won = true;
-					for (int x = 1; x < GS_TICTACTOE_BOARD_WIDTH; x++) {
-						_won = _won && (game[x][y] == game[0][y]);
+					if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open) {
+						bool _won = true;
+						for (int x = 1; x < GS_TICTACTOE_BOARD_WIDTH; x++) if (game[x][y] != game[0][y]) _won = false;
+						if (_won) whoWon = game[0][y];
 					}
-					if (_won) whoWon = game[0][y];
 				}
-
+				
 				//Check for vertical win
-				if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open)
 				for (int x = 0; x < GS_TICTACTOE_BOARD_HEIGHT; x++) {
-					bool _won = true;
-					for (int y = 1; y < GS_TICTACTOE_BOARD_WIDTH; y++) {
-						_won = _won && (game[x][y] == game[y][0]);
+					if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open) {
+						bool _won = true;
+						for (int y = 1; y < GS_TICTACTOE_BOARD_WIDTH; y++) if (game[x][y] != game[x][0]) _won = false;
+						if (_won) whoWon = game[x][0];
 					}
-					if (_won) whoWon = game[x][0];
 				}
 
 				//Check for win along diagonals
@@ -210,11 +210,20 @@ int launchTicTacToe()
 						}
 					}
 					if (_tied) whoWon = gs_tictactoe_space_state::gs_tictactoe_space_invalid;
-					std::cout << "Tied? " << _tied << std::endl;
 				}
+				
+				//If game is over, show it
+				if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_invalid) {
+					showDialog("Tied!", cgetw() / 2, cgeth() / 2);
+					cquerych();
 
-				if (whoWon != gs_tictactoe_space_state::gs_tictactoe_space_open) {
-					std::cout << render_styles[whoWon] << "Winner: " << render_chars[whoWon] << std::endl;
+					gs_tictactoe_reset(game);
+					cclear();
+				}
+				else if (whoWon != gs_tictactoe_space_state::gs_tictactoe_space_open) {
+					std::string winstr = "Winner: ";
+					winstr += render_chars[whoWon];
+					showDialog(winstr, cgetw() / 2, cgeth() / 2);
 					cquerych();
 
 					gs_tictactoe_reset(game);
@@ -232,29 +241,40 @@ int launchTicTacToe()
 }
 
 void render(gs_tictactoe game, const int& highlightedX, const int& highlightedY) {
-	const int border = 1;
+	const int border = 2;
 
-	StyledTextBlock canvas(GS_TICTACTOE_BOARD_WIDTH * (1 + border * 2), GS_TICTACTOE_BOARD_HEIGHT * (1 + border * 2));
+	StyledTextBlock gameCanvas(GS_TICTACTOE_BOARD_WIDTH * (1 + border * 2), GS_TICTACTOE_BOARD_HEIGHT * (1 + border * 2));
 	
 	for (int x = 0; x < GS_TICTACTOE_BOARD_WIDTH; x++) {
 		for (int y = 0; y < GS_TICTACTOE_BOARD_HEIGHT; y++) {
 			int cell_x = border + x * (1 + border * 2);
 			int cell_y = border + y * (1 + border * 2);
 			
-			canvas.setStyledChar(render_sc[game[x][y]], cell_x, cell_y);
+			gameCanvas.setStyledChar(render_sc[game[x][y]], cell_x, cell_y);
 			
-			for (int i = 1; i <= border; i++) canvas.drawBox(render_styles[game[x][y]], cell_x - i, cell_y - i, cell_x + i, cell_y + i);
+			for (int i = 1; i <= border; i++) gameCanvas.drawBox(render_styles[game[x][y]], cell_x - i, cell_y - i, cell_x + i, cell_y + i);
 
 			if (x == highlightedX && y == highlightedY) {
-				canvas.fillStyle(TextStyle(1, 1, 0, 1), cell_x - border, cell_y - border, cell_x + border, cell_y + border);
+				gameCanvas.fillStyle(TextStyle(1, 1, 0, 1), cell_x - border, cell_y - border, cell_x + border, cell_y + border);
 			}
 		}
 	}
 
-	canvas.renderAt(cgetw()/2 - canvas.width/2, cgeth()/2 - canvas.height/2);
+	gameCanvas.renderAt(cgetw()/2 - gameCanvas.width/2, cgeth()/2 - gameCanvas.height/2);
+
+
+	showDialog("Arrow keys to move selector   Space to place tile", cgetw()/2, cgeth()/2 + gameCanvas.height/2 + 3);
+	
 
 	csetcolc(1, 1, 1, 1);
 	csetcurpos(0, 0);
+}
+
+void showDialog(std::string str, int x, int y) {
+	StyledTextBlock dialog((int)str.length() + 2, 3);
+	dialog.drawBox(TextStyle(), 0, 0, dialog.width - 1, dialog.height - 1);
+	dialog.putStr(str, 1, 1);
+	dialog.renderAt(x - dialog.width/2, y - dialog.height/2);
 }
 
 //-----------------------------------------------------------------------------

@@ -183,6 +183,20 @@ void StyledTextBlock::fillChar(const char& chars, const int& x1, const int& y1, 
 	}
 }
 
+void StyledTextBlock::putStr(const std::string& str, const int& x, const int& y)
+{
+	for (int i = 0; i < str.length() && i + x < width; i++) {
+		setChar(str.at(i), i + x, y);
+	}
+}
+
+void StyledTextBlock::putSstr(const StyledString& sstr, const int& x, const int& y)
+{
+	for (int i = 0; i < sstr.length() && i + x < width; i++) {
+		setStyledChar(sstr.at(i), i + x, y);
+	}
+}
+
 const char border_n = 196;
 const char border_w = 179;
 const char border_s = 196;
@@ -212,6 +226,7 @@ void StyledTextBlock::renderAt(const int& x, const int& y)
 		csetcurpos(x, y + iy);
 		for (int ix = 0; ix < width; ix++) {
 			if (textBlock[ix][iy].character > 32 || textBlock[ix][iy].character < 0) std::cout << textBlock[ix][iy];
+			else std::cout << " ";
 		}
 	}
 }

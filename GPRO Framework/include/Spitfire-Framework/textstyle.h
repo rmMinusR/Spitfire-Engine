@@ -64,7 +64,10 @@ public:
 	void fillStyledChar(const StyledChar& styledChar, const int& x1, const int& y1, const int& x2, const int& y2);
 	void fillStyle     (const  TextStyle& style,      const int& x1, const int& y1, const int& x2, const int& y2);
 	void fillChar      (const       char& chars,      const int& x1, const int& y1, const int& x2, const int& y2);
-	
+
+	void putStr (const  std::string&  str, const int& x, const int& y);
+	void putSstr(const StyledString& sstr, const int& x, const int& y);
+
 	void drawBox(const TextStyle& style, int x1, int y1, int x2, int y2);
 
 	void renderAt(const int& x, const int& y);
