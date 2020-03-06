@@ -71,6 +71,16 @@ StyledChar render_sc[3];
 
 void render(gs_tictactoe game, const int& highlightedX = -1, const int& highlightedY = -1); //Conversion function from gs_tictactoe[][] to renderarr-formatted
 void showDialog(std::string str, int x, int y);
+
+//-----------------------------------------------------------------------------
+// RUNTIME VARIABLES
+
+gs_tictactoe_space_state whoseTurn = gs_tictactoe_space_o;
+
+//Previous Console Width/Height
+int pcw = 0;
+int pch = 0;
+
 int launchTicTacToe()
 {
 	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_open] = '.';
@@ -92,19 +102,12 @@ int launchTicTacToe()
 		
 		//Initialize game
 		gs_tictactoe_reset(game);
-		gs_tictactoe_space_state whoseTurn = gs_tictactoe_space_o;
-
-		//Previous Console Width/Height
-		int pcw = 0;
-		int pch = 0;
+		whoseTurn = gs_tictactoe_space_o;
 
 		csetcurvis(false);
 
 		//Main game loop
 		while (true) {
-			//Display whose turn it is
-			std::cout << render_styles[whoseTurn] << "Player " << render_chars[whoseTurn] << "'s turn" << std::endl;
-
 			//Input logic + rendering
 			int selX = GS_TICTACTOE_BOARD_WIDTH / 2, selY = GS_TICTACTOE_BOARD_HEIGHT / 2;
 			bool hasMoved = false;
@@ -151,7 +154,7 @@ int launchTicTacToe()
 				}
 
 				//Render the game board, flashing the selected cell
-				if (clock() % 500 < 250) {
+				if (clock() % 500 < 250 && !hasMoved) {
 					render(game, selX, selY);
 				}
 				else {
@@ -266,8 +269,9 @@ void render(gs_tictactoe game, const int& highlightedX, const int& highlightedY)
 	showDialog("Arrow keys to move selector   Space to place tile", cgetw()/2, cgeth()/2 + gameCanvas.height/2 + 3);
 	
 
-	csetcolc(1, 1, 1, 1);
+	//Display whose turn it is
 	csetcurpos(0, 0);
+	std::cout << render_styles[whoseTurn] << "Player " << render_chars[whoseTurn] << "'s turn" << std::endl;
 }
 
 void showDialog(std::string str, int x, int y) {
