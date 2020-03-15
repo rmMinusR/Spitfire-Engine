@@ -36,6 +36,9 @@
     <ClCompile Include="..\..\..\source\GPRO-FW-Launcher\GPRO-FW-Launcher_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\GPRO-FW-Launcher\Game\Generic.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\Game\GPRO-FW-TicTacToe.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files\Game</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\Game\GPRO-FW-Checkers.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\Game\Generic.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>

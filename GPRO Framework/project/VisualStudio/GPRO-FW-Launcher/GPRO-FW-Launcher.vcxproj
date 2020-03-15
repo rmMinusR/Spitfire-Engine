@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\source\GPRO-FW-Launcher\Game\Generic.cpp" />
     <ClCompile Include="..\..\..\source\GPRO-FW-Launcher\Game\GPRO-FW-Battleship.cpp" />
     <ClCompile Include="..\..\..\source\GPRO-FW-Launcher\Game\GPRO-FW-Checkers.cpp" />
     <ClCompile Include="..\..\..\source\GPRO-FW-Launcher\Game\GPRO-FW-Mancala.cpp" />
@@ -26,6 +27,7 @@
     <ClCompile Include="..\..\..\source\GPRO-FW-Launcher\GPRO-FW-Launcher_main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\include\Game\Generic.h" />
     <ClInclude Include="..\..\..\include\Game\GPRO-FW-Battleship.h" />
     <ClInclude Include="..\..\..\include\Game\GPRO-FW-Checkers.h" />
     <ClInclude Include="..\..\..\include\Game\GPRO-FW-Mancala.h" />

@@ -5,8 +5,8 @@
 
 // MACROS
 
-#define max(a, b) ( ( (a) > (b) )?(a):(b) )
-#define min(a, b) ( ( (a) < (b) )?(a):(b) )
+#define max(a, b) ( ((a)>(b))?(a):(b) )
+#define min(a, b) ( ((a)<(b))?(a):(b) )
 
 //-----------------------------------------------------------------------------
 // DECLARATIONS
@@ -25,6 +25,7 @@ enum gs_tictactoe_space_state
 	gs_tictactoe_space_o,		// space is taken by O player
 	gs_tictactoe_space_x,		// space is taken by X player
 };
+
 #ifndef __cplusplus
 typedef		enum gs_tictactoe_space_state		gs_tictactoe_space_state;
 #endif	// !__cplusplus
@@ -85,22 +86,22 @@ int pch = 0;
 int launchTicTacToe()
 {
 	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_open] = '.';
-	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_o   ] = 'O';
-	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_x   ] = 'X';
-	
+	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_o] = 'O';
+	render_chars[gs_tictactoe_space_state::gs_tictactoe_space_x] = 'X';
+
 	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_open] = TextStyle(0, 0, 0, 1);
-	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_o   ] = TextStyle(1, 0, 0, 1);
-	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_x   ] = TextStyle(0, 0, 1, 1);
+	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_o] = TextStyle(1, 0, 0, 1);
+	render_styles[gs_tictactoe_space_state::gs_tictactoe_space_x] = TextStyle(0, 0, 1, 1);
 
 	render_sc[gs_tictactoe_space_state::gs_tictactoe_space_open] = StyledChar(render_chars[gs_tictactoe_space_state::gs_tictactoe_space_open], render_styles[gs_tictactoe_space_state::gs_tictactoe_space_open]);
-	render_sc[gs_tictactoe_space_state::gs_tictactoe_space_o   ] = StyledChar(render_chars[gs_tictactoe_space_state::gs_tictactoe_space_o   ], render_styles[gs_tictactoe_space_state::gs_tictactoe_space_o   ]);
-	render_sc[gs_tictactoe_space_state::gs_tictactoe_space_x   ] = StyledChar(render_chars[gs_tictactoe_space_state::gs_tictactoe_space_x   ], render_styles[gs_tictactoe_space_state::gs_tictactoe_space_x   ]);
+	render_sc[gs_tictactoe_space_state::gs_tictactoe_space_o] = StyledChar(render_chars[gs_tictactoe_space_state::gs_tictactoe_space_o], render_styles[gs_tictactoe_space_state::gs_tictactoe_space_o]);
+	render_sc[gs_tictactoe_space_state::gs_tictactoe_space_x] = StyledChar(render_chars[gs_tictactoe_space_state::gs_tictactoe_space_x], render_styles[gs_tictactoe_space_state::gs_tictactoe_space_x]);
 
 	gs_tictactoe game;
 
 	bool doExitGame = false;
 	while (!doExitGame) {
-		
+
 		//Initialize game
 		gs_tictactoe_reset(game);
 		whoseTurn = gs_tictactoe_space_o;
@@ -169,7 +170,7 @@ int launchTicTacToe()
 			//Do win/lose logic
 			{
 				gs_tictactoe_space_state whoWon = gs_tictactoe_space_state::gs_tictactoe_space_open;
-				
+
 				//Check for horizontal win
 				for (int y = 0; y < GS_TICTACTOE_BOARD_HEIGHT; y++) {
 					if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open) {
@@ -178,7 +179,7 @@ int launchTicTacToe()
 						if (_won) whoWon = game[0][y];
 					}
 				}
-				
+
 				//Check for vertical win
 				for (int x = 0; x < GS_TICTACTOE_BOARD_HEIGHT; x++) {
 					if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open) {
@@ -187,6 +188,9 @@ int launchTicTacToe()
 						if (_won) whoWon = game[x][0];
 					}
 				}
+
+#pragma warning (push)
+#pragma warning (disable: 6287) // Get rid of warning on "i < GS_TICTACTOE_BOARD_HEIGHT && i < GS_TICTACTOE_BOARD_WIDTH"
 
 				//Check for win along diagonals
 				if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open) {
@@ -205,28 +209,31 @@ int launchTicTacToe()
 					if (_won) whoWon = game[0][GS_TICTACTOE_BOARD_WIDTH - 1];
 				}
 
+#pragma warning (pop)
+
 				//Check for tie
 				if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_open) {
 					bool _tied = true;
 					for (int x = 0; x < GS_TICTACTOE_BOARD_HEIGHT; x++) {
-						for (int y = 1; y < GS_TICTACTOE_BOARD_WIDTH; y++) {
+						for (int y = 0; y < GS_TICTACTOE_BOARD_WIDTH; y++) {
 							_tied = _tied && (game[x][y] != gs_tictactoe_space_state::gs_tictactoe_space_open);
 						}
 					}
 					if (_tied) whoWon = gs_tictactoe_space_state::gs_tictactoe_space_invalid;
 				}
-				
+
 				//If game is over, show it
 				if (whoWon == gs_tictactoe_space_state::gs_tictactoe_space_invalid) {
-					showDialog("Tied!", cgetw() / 2, cgeth() / 2);
+					showDialog("The game has reached a tie!", cgetw() / 2, cgeth() / 2);
 					cquerych();
 
 					gs_tictactoe_reset(game);
 					cclear();
 				}
 				else if (whoWon != gs_tictactoe_space_state::gs_tictactoe_space_open) {
-					std::string winstr = "Winner: ";
+					std::string winstr = "Player ";
 					winstr += render_chars[whoWon];
+					winstr += " has won the game!";
 					showDialog(winstr, cgetw() / 2, cgeth() / 2);
 					cquerych();
 
@@ -237,9 +244,9 @@ int launchTicTacToe()
 			} //End of win/lose logic
 
 		} //End of main game loop
-		
+
 	} //End of program
-	
+
 
 	return 0;
 }
@@ -250,18 +257,19 @@ StyledTextBlock getMenuName(bool isSelected)
 }
 
 void render(gs_tictactoe game, const int& highlightedX, const int& highlightedY) {
-	const int border = 2;
+	const int border = 3;
 
 	StyledTextBlock gameCanvas(GS_TICTACTOE_BOARD_WIDTH * (1 + border * 2), GS_TICTACTOE_BOARD_HEIGHT * (1 + border * 2));
-	
+
 	for (int x = 0; x < GS_TICTACTOE_BOARD_WIDTH; x++) {
 		for (int y = 0; y < GS_TICTACTOE_BOARD_HEIGHT; y++) {
 			int cell_x = border + x * (1 + border * 2);
 			int cell_y = border + y * (1 + border * 2);
-			
+
 			gameCanvas.setStyledChar(render_sc[game[x][y]], cell_x, cell_y);
-			
-			for (int i = 1; i <= border; i++) gameCanvas.drawBox(render_styles[game[x][y]], cell_x - i, cell_y - i, cell_x + i, cell_y + i);
+
+			int i = border;
+			if (border > 0) gameCanvas.drawBox(render_styles[game[x][y]], cell_x - i, cell_y - i, cell_x + i, cell_y + i);
 
 			if (x == highlightedX && y == highlightedY) {
 				gameCanvas.fillStyle(TextStyle(1, 1, 0, 1), cell_x - border, cell_y - border, cell_x + border, cell_y + border);
@@ -269,11 +277,11 @@ void render(gs_tictactoe game, const int& highlightedX, const int& highlightedY)
 		}
 	}
 
-	gameCanvas.renderAt(cgetw()/2 - gameCanvas.width/2, cgeth()/2 - gameCanvas.height/2);
+	gameCanvas.renderAt(cgetw() / 2 - gameCanvas.width / 2, cgeth() / 2 - gameCanvas.height / 2);
 
 
-	showDialog("Arrow keys to move selector   Space to place tile", cgetw()/2, cgeth()/2 + gameCanvas.height/2 + 3);
-	
+	showDialog("Arrow keys to move selector   Space to place tile", cgetw() / 2, cgeth() / 2 + gameCanvas.height / 2 + 3);
+
 
 	//Display whose turn it is
 	csetcurpos(0, 0);
@@ -284,7 +292,7 @@ void showDialog(std::string str, int x, int y) {
 	StyledTextBlock dialog((int)str.length() + 2, 3);
 	dialog.drawBox(TextStyle(), 0, 0, dialog.width - 1, dialog.height - 1);
 	dialog.putStr(str, 1, 1);
-	dialog.renderAt(x - dialog.width/2, y - dialog.height/2);
+	dialog.renderAt(x - dialog.width / 2, y - dialog.height / 2);
 }
 
 //-----------------------------------------------------------------------------

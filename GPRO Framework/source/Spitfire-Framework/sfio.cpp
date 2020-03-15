@@ -50,6 +50,7 @@ void csetcurvis(bool visiblity)
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_CURSOR_INFO cursorInfo;
 	cursorInfo.bVisible = visiblity;
+	cursorInfo.dwSize = visiblity?20:1;
 	SetConsoleCursorInfo(hConsole, &cursorInfo);
 }
 
