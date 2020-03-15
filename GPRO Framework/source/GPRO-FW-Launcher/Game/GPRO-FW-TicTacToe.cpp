@@ -1,6 +1,7 @@
 #include "Spitfire-Framework/sfio.h"
 #include "Spitfire-Framework/textstyle.h"
 #include <time.h>
+#include "..\..\..\include\Game\GPRO-FW-TicTacToe.h"
 
 // MACROS
 
@@ -241,6 +242,11 @@ int launchTicTacToe()
 	
 
 	return 0;
+}
+
+StyledTextBlock getMenuName(bool isSelected)
+{
+	return StyledTextBlock("Tic-Tac-Toe");
 }
 
 void render(gs_tictactoe game, const int& highlightedX, const int& highlightedY) {

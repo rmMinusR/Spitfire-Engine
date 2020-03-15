@@ -55,6 +55,8 @@ public:
 	int width, height;
 	
 	StyledTextBlock(const int& w, const int& h);
+	StyledTextBlock(const std::string& src);
+	StyledTextBlock(const StyledTextBlock& src);
 	~StyledTextBlock();
 
 	void setStyledChar(const StyledChar& sc,    const int& x, const int& y);

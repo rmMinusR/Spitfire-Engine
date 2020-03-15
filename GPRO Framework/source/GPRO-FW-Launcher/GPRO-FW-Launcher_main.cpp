@@ -6,5 +6,7 @@
 
 int main()
 {
+	getMenuName(false).renderAt(0, 0);
+	cquerych();
 	return launchTicTacToe();
 }

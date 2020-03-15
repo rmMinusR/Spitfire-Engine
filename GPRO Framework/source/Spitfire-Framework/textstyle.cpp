@@ -123,6 +123,61 @@ StyledTextBlock::StyledTextBlock(const int& w, const int& h) {
 	}
 }
 
+StyledTextBlock::StyledTextBlock(const std::string& src) {
+	width = 0;
+	height = 1;
+	
+	//Detect size
+	int thisLineWidth = 0;
+	for (int i = 0; i < src.length(); i++) {
+		
+		if (src.at(i) == '\n') {
+			height++;
+			if (width < thisLineWidth) width = thisLineWidth;
+		}
+		else {
+			thisLineWidth++;
+		}
+
+	}
+	if (width < thisLineWidth) width = thisLineWidth;
+
+	//Init textblock
+	textBlock = new StyledChar * [width];
+	for (int i = 0; i < width; i++) {
+		textBlock[i] = new StyledChar[height];
+		for (int j = 0; j < height; j++) textBlock[i][j] = StyledChar();
+	}
+
+	//Populate textblock
+	int x = 0, y = 0;
+	for (int i = 0; i < src.length(); i++) {
+		
+		setChar(src.at(i), x, y);
+
+		if (src.at(i) == '\n') {
+			y++;
+			x = 0;
+		}
+		else {
+			x++;
+		}
+	}
+}
+
+//Cpy ctor
+StyledTextBlock::StyledTextBlock(const StyledTextBlock& src) {
+	this->width = src.width;
+	this->height = src.height;
+
+	//Init textblock
+	textBlock = new StyledChar * [width];
+	for (int i = 0; i < width; i++) {
+		textBlock[i] = new StyledChar[height];
+		for (int j = 0; j < height; j++) textBlock[i][j] = src.textBlock[i][j];
+	}
+}
+
 StyledTextBlock::~StyledTextBlock() {
 	for (int i = 0; i < width; i++) delete[] textBlock[i];
 	delete[] textBlock;
@@ -232,3 +287,4 @@ void StyledTextBlock::renderAt(const int& x, const int& y)
 }
 
 #pragma endregion
+
