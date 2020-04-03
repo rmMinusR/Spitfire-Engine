@@ -71,7 +71,6 @@ TextStyle render_styles[3];
 StyledChar render_sc[3];
 
 void render(gs_tictactoe game, const int& highlightedX = -1, const int& highlightedY = -1); //Conversion function from gs_tictactoe[][] to renderarr-formatted
-void showDialog(std::string str, int x, int y);
 
 //-----------------------------------------------------------------------------
 // RUNTIME VARIABLES
@@ -285,13 +284,6 @@ void render(gs_tictactoe game, const int& highlightedX, const int& highlightedY)
 	//Display whose turn it is
 	csetcurpos(0, 0);
 	std::cout << render_styles[whoseTurn] << "Player " << render_chars[whoseTurn] << "'s turn" << std::endl;
-}
-
-void showDialog(std::string str, int x, int y) {
-	StyledTextBlock dialog((int)str.length() + 2, 3);
-	dialog.drawBox(TextStyle(), 0, 0, dialog.width - 1, dialog.height - 1);
-	dialog.putStr(str, 1, 1);
-	dialog.renderAt(x - dialog.width / 2, y - dialog.height / 2);
 }
 
 //-----------------------------------------------------------------------------
