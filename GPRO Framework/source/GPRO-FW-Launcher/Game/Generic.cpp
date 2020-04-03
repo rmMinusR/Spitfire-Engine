@@ -91,7 +91,6 @@ namespace game_generic {
 #pragma endregion
 
 	void render(game_grid game, const int& highlightedX = -1, const int& highlightedY = -1); //Conversion function from tictactoe[][] to renderarr-formatted
-	void showDialog(std::string str, int x, int y);
 
 	int game_main()
 	{
