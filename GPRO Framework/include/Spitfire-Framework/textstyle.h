@@ -1,8 +1,13 @@
 #pragma once
 #include <ostream>
 
+//RGBL 0-1 to color code
 unsigned char ascol(bool r, bool g, bool b, bool light);
+
+//Set color from color code byte
 void csetcolb(unsigned char col);
+
+//Set color from components
 void csetcolc(bool r, bool g, bool b, bool light);
 
 class TextStyle {
@@ -41,12 +46,15 @@ public:
 	friend std::ostream& operator<<(std::ostream& out, const StyledChar& c);
 };
 
-class StyledString : public std::basic_string<StyledChar, std::char_traits<StyledChar>, std::allocator<StyledChar>> {
+//UNTESTED. DO NOT USE
+/*
+class StyledString : private std::basic_string<StyledChar, std::char_traits<StyledChar>, std::allocator<StyledChar>> {
 public:
 	void setStyle(const TextStyle& style, const int& end, const int& start);
 
 	friend std::ostream& operator<<(std::ostream& out, const StyledString& s);
 };
+// */
 
 class StyledTextBlock {
 	StyledChar** textBlock;
@@ -68,7 +76,7 @@ public:
 	void fillChar      (const       char& chars,      const int& x1, const int& y1, const int& x2, const int& y2);
 
 	void putStr (const  std::string&  str, const int& x, const int& y);
-	void putSstr(const StyledString& sstr, const int& x, const int& y);
+	//void putSstr(const StyledString& sstr, const int& x, const int& y);
 
 	void drawBox(const TextStyle& style, int x1, int y1, int x2, int y2);
 

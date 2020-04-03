@@ -1,7 +1,6 @@
 #include "Spitfire-Framework/sfio.h"
 #include "Spitfire-Framework/textstyle.h"
 #include <time.h>
-#include "..\..\..\include\Game\GPRO-FW-TicTacToe.h"
 
 // MACROS
 

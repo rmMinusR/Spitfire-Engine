@@ -4,6 +4,7 @@
 #include "Spitfire-Framework/textstyle.h"
 
 #include <time.h>
+#include <string>
 
 namespace game_generic {
 
@@ -290,13 +291,6 @@ namespace game_generic {
 		//Display whose turn it is
 		csetcurpos(0, 0);
 		std::cout << render_styles[whoseTurn] << "Player " << render_chars[whoseTurn] << "'s turn" << std::endl;
-	}
-
-	void showDialog(std::string str, int x, int y) {
-		StyledTextBlock dialog((int)str.length() + 2, 3);
-		dialog.drawBox(TextStyle(), 0, 0, dialog.width - 1, dialog.height - 1);
-		dialog.putStr(str, 1, 1);
-		dialog.renderAt(x - dialog.width / 2, y - dialog.height / 2);
 	}
 
 }

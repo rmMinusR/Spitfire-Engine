@@ -1,6 +1,8 @@
 #include "Spitfire-Framework/textstyle.h"
 #include "Spitfire-Framework/sfio.h"
 
+#include <ostream>
+
 #include <Windows.h> //For console text coloration, at the cost of portability
 
 #pragma region Coloration utils
@@ -91,8 +93,8 @@ StyledChar::StyledChar(const char& c, const TextStyle& s)
 
 #pragma endregion
 
-#pragma region StyledString
-
+#pragma region StyledString (DISABLED)
+/*
 std::ostream& operator<<(std::ostream& out, const StyledString& s)
 {
 	for (int i = 0; i < s.length(); i++) {
@@ -107,7 +109,7 @@ void StyledString::setStyle(const TextStyle& style, const int& end = INT_MAX, co
 		at(i).style = style;
 	}
 }
-
+// */
 #pragma endregion
 
 #pragma region StyledTextBlock
@@ -245,12 +247,14 @@ void StyledTextBlock::putStr(const std::string& str, const int& x, const int& y)
 	}
 }
 
+/*
 void StyledTextBlock::putSstr(const StyledString& sstr, const int& x, const int& y)
 {
 	for (int i = 0; i < sstr.length() && i + x < width; i++) {
 		setStyledChar(sstr.at(i), i + x, y);
 	}
 }
+//*/
 
 const char border_n = 196;
 const char border_w = 179;
